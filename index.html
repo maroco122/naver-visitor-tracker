@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Naver Blog Visitor Counter</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    input, button {
+      margin-bottom: 10px;
+    }
+    #results {
+      margin-top: 20px;
+    }
+    .visitor-record {
+      padding: 5px;
+      border-bottom: 1px solid #ddd;
+    }
+  </style>
+</head>
+<body>
+  <h1>Naver Blog Visitor Tracker</h1>
+  <p>Enter the Naver Blog ID:</p>
+  <input type="text" id="blogId" placeholder="Enter blog ID (e.g., on-engineer)">
+  <button onclick="getVisitorCounts()">Check Visitors</button>
+
+  <div id="results">
+    <h3>Visitor Counts (Last 5 Days):</h3>
+    <div id="visitorRecords"></div>
+  </div>
+
+  <script>
+    async function getVisitorCounts() {
+      const blogId = document.getElementById('blogId').value;
+      const url = `https://blog.naver.com/NVisitorgp4Ajax.nhn?blogId=${blogId}`;
+
+      try {
+        const response = await fetch(url);
+        const text = await response.text();
+        
+        const visitorRegex = /<visitorcnt id="(\d+)" cnt="(\d+)"\/>/g;
+        let match;
+        let results = '';
+
+        while ((match = visitorRegex.exec(text)) !== null) {
+          const date = match[1];
+          const count = match[2];
+          results += `<div class="visitor-record"><strong>${date}:</strong> ${count} visitors</div>`;
+        }
+
+        document.getElementById('visitorRecords').innerHTML = results || 'No recent data found.';
+      } catch (error) {
+        document.getElementById('visitorRecords').innerHTML = 'Error retrieving data. Please try again.';
+      }
+    }
+  </script>
+</body>
+</html>
