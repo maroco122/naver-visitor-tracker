@@ -14,48 +14,22 @@
     input, button {
       margin-bottom: 10px;
     }
-    #results {
-      margin-top: 20px;
-    }
-    .visitor-record {
-      padding: 5px;
-      border-bottom: 1px solid #ddd;
-    }
   </style>
 </head>
 <body>
   <h1>네이버 블로그 방문자 수 조회</h1>
   <p>네이버 블로그 아이디를 입력하세요:</p>
-  <input type="text" id="blogId" placeholder="블로그 아이디 입력 ">
-  <button onclick="getVisitorCounts()">확인하기</button>
-
-  <div id="results">
-    <h3>방문자 수 (최근 5일):</h3>
-    <div id="visitorRecords"></div>
-  </div>
+  <input type="text" id="blogId" placeholder="블로그 아이디 입력">
+  <button onclick="redirectToBlog()">확인하기</button>
 
   <script>
-    async function getVisitorCounts() {
-      const blogId = document.getElementById('blogId').value;
-      const url = `https://blog.naver.com/NVisitorgp4Ajax.nhn?blogId=${blogId}`;
-
-      try {
-        const response = await fetch(url);
-        const text = await response.text();
-        
-        const visitorRegex = /<visitorcnt id="(\d+)" cnt="(\d+)"\/>/g;
-        let match;
-        let results = '';
-
-        while ((match = visitorRegex.exec(text)) !== null) {
-          const date = match[1];
-          const count = match[2];
-          results += `<div class="visitor-record"><strong>${date}:</strong> ${count}명 방문</div>`;
-        }
-
-        document.getElementById('visitorRecords').innerHTML = results || '최근 데이터가 없습니다.';
-      } catch (error) {
-        document.getElementById('visitorRecords').innerHTML = '데이터를 불러오는 중 오류가 발생했습니다. 다시 시도해주세요.';
+    function redirectToBlog() {
+      const blogId = document.getElementById('blogId').value.trim();
+      if (blogId) {
+        const url = `https://blog.naver.com/NVisitorgp4Ajax.nhn?blogId=${blogId}`;
+        window.location.href = url;
+      } else {
+        alert('블로그 아이디를 입력해주세요.');
       }
     }
   </script>
